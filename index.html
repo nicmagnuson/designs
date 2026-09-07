@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magnuson Stamp Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  --paper:#ffffff;
+  --ink:#111111;
+  --soft:#444444;
+  --red:#a11d1d;      /* stamp-pad red; white on this = 7.7:1 */
+  --track:#e6e6e6;
+  color-scheme:light;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Archivo",Arial,Helvetica,sans-serif;
+  font-size:19px;
+  line-height:1.55;
+  text-align:left;
+  -webkit-text-size-adjust:100%;
+}
+img{ max-width:100%; display:block; }
+figure{ margin:0; }
+[hidden]{ display:none !important; }
+
+.wrap{ max-width:680px; margin:0 auto; padding:0 20px; }
+.wrap-wide{ max-width:1080px; margin:0 auto; padding:0 20px; }
+
+h1{
+  font-size:clamp(40px, 10.5vw, 62px);
+  font-weight:900;
+  line-height:1.03;
+  letter-spacing:-0.01em;
+  margin:0 0 18px;
+}
+h2{
+  font-size:29px;
+  font-weight:900;
+  line-height:1.15;
+  margin:0 0 10px;
+}
+.rule{ width:52px; height:5px; background:var(--red); border:0; margin:0 0 22px; }
+
+/* Buttons: big, obvious, thumb-sized */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:58px;
+  padding:14px 28px;
+  font:inherit;
+  font-size:20px;
+  font-weight:700;
+  line-height:1.2;
+  border-radius:8px;
+  text-decoration:none;
+  cursor:pointer;
+  text-align:center;
+}
+.btn:active{ transform:translateY(1px); }
+.btn:focus-visible,
+a:focus-visible,
+input:focus-visible{
+  outline:3px solid var(--red);
+  outline-offset:3px;
+}
+.btn-red{ background:var(--red); color:#ffffff; border:2px solid var(--red); }
+.btn-outline{ background:#ffffff; color:var(--ink); border:2px solid var(--ink); }
+.btn-block{ display:flex; width:100%; }
+.btn:disabled{ opacity:.55; cursor:default; }
+
+/* Header */
+.site-header{ border-bottom:2px solid var(--ink); background:#ffffff; }
+.header-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding-top:12px;
+  padding-bottom:12px;
+}
+.logo{ height:46px; width:auto; }
+.btn-header{ padding:12px 20px; font-size:19px; }
+
+/* Hero */
+.hero{ padding:40px 0 48px; }
+.hero-grid{ display:grid; grid-template-columns:1fr; gap:32px; align-items:center; }
+.lede{ font-size:22px; margin:0 0 26px; max-width:32ch; }
+.hero-photo{
+  border:2px solid var(--ink);
+  border-radius:8px;
+  overflow:hidden;
+  background:#ffffff;
+}
+
+/* The Lab */
+.lab{ padding:8px 0 52px; }
+#lab{ scroll-margin-top:16px; }
+.lab-panel{
+  border:2px solid var(--ink);
+  border-radius:10px;
+  padding:22px 20px 26px;
+  background:#ffffff;
+}
+.lab-label{
+  display:block;
+  font-size:29px;
+  font-weight:900;
+  line-height:1.15;
+  margin:0 0 16px;
+}
+#stamp-idea{
+  width:100%;
+  min-height:62px;
+  padding:14px 16px;
+  font:inherit;
+  font-size:20px;
+  color:var(--ink);
+  background:#ffffff;
+  border:2px solid var(--ink);
+  border-radius:8px;
+  margin:0 0 12px;
+}
+#stamp-idea::placeholder{ color:#595959; opacity:1; }
+.design-frame{
+  aspect-ratio:3/2;
+  border:2px solid var(--ink);
+  border-radius:8px;
+  background:#ffffff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  margin-top:22px;
+}
+.design-frame img{ width:100%; height:100%; object-fit:contain; }
+.dots{ display:flex; gap:10px; }
+.dots span{
+  width:13px; height:13px;
+  border-radius:50%;
+  background:var(--red);
+  animation:pulse 1s infinite ease-in-out;
+}
+.dots span:nth-child(2){ animation-delay:.15s; }
+.dots span:nth-child(3){ animation-delay:.3s; }
+@keyframes pulse{
+  0%,100%{ opacity:.25; transform:translateY(0); }
+  50%{ opacity:1; transform:translateY(-6px); }
+}
+.row-2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
+.tweak-grid{ display:grid; grid-template-columns:1fr; gap:12px; margin-top:12px; }
+.lab-note{ color:var(--soft); margin:16px 0 0; }
+
+/* Backing board */
+.board{ padding:8px 0 44px; }
+.board-lede{ font-size:20px; margin:0 0 26px; max-width:40ch; }
+.board-card{
+  position:relative;
+  border:2px solid var(--ink);
+  border-radius:10px;
+  padding:20px;
+  background:#ffffff;
+  margin:0 0 26px;
+}
+.card-art{
+  position:relative;
+  border:1px solid #d9d9d9;
+  border-radius:6px;
+  overflow:hidden;
+  margin:0 0 16px;
+  background:#ffffff;
+}
+.funded-mark{
+  position:absolute;
+  top:14px;
+  right:12px;
+  transform:rotate(-8deg);
+  color:var(--red);
+  border:3px solid var(--red);
+  border-radius:8px;
+  padding:2px 14px;
+  font-size:25px;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  background:rgba(255,255,255,.88);
+}
+.board-card:not(.funded) .funded-only{ display:none !important; }
+.board-card.funded .open-only{ display:none !important; }
+.maker{ font-weight:700; margin:0 0 2px; }
+.mount{ color:var(--soft); margin:0 0 14px; }
+.price-big{ font-size:30px; font-weight:900; line-height:1.2; margin:0; }
+.price-sub{ color:var(--soft); margin:2px 0 0; }
+.progress{
+  height:16px;
+  background:var(--track);
+  border-radius:999px;
+  overflow:hidden;
+  margin:18px 0 10px;
+}
+.progress-fill{
+  height:100%;
+  width:0;
+  background:var(--red);
+  border-radius:999px;
+  transition:width .35s ease;
+}
+.backed-line{ font-weight:600; margin:0 0 4px; }
+.days-line{ color:var(--soft); margin:0; }
+.board-card .btn{ margin-top:16px; }
+.see-all{ margin-top:6px; }
+
+/* How it works */
+.how{ padding:8px 0 44px; }
+.steps{ list-style:none; margin:0; padding:0; counter-reset:step; }
+.steps li{
+  counter-increment:step;
+  display:grid;
+  grid-template-columns:54px 1fr;
+  gap:16px;
+  align-items:center;
+  margin:0 0 22px;
+  font-size:21px;
+  line-height:1.4;
+}
+.steps li::before{
+  content:counter(step);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:54px;
+  height:54px;
+  border:3px solid var(--red);
+  border-radius:50%;
+  color:var(--red);
+  font-size:26px;
+  font-weight:900;
+}
+
+/* Proof */
+.proof{ padding:8px 0 44px; }
+.proof-photo{
+  border:2px solid var(--ink);
+  border-radius:8px;
+  overflow:hidden;
+  background:#ffffff;
+}
+.proof figcaption{ color:var(--soft); margin-top:10px; }
+
+/* Challenge */
+.challenge{ padding:8px 0 56px; }
+.challenge-box{
+  border:2px solid var(--ink);
+  border-radius:10px;
+  padding:24px 20px;
+  background:#ffffff;
+}
+.challenge-box p{ font-size:21px; margin:0 0 22px; max-width:36ch; }
+
+/* Footer */
+.site-footer{ border-top:2px solid var(--ink); padding:44px 0 64px; }
+.foot-line{ font-size:20px; margin:0 0 26px; max-width:36ch; }
+.foot-logo{ height:44px; width:auto; margin:0 0 18px; }
+.foot-links{ margin:0; padding:0; list-style:none; }
+.foot-links a{
+  display:inline-block;
+  padding:13px 0;
+  color:var(--ink);
+  font-size:20px;
+  font-weight:500;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+
+@media (min-width:920px){
+  body{ font-size:20px; }
+  .hero{ padding:56px 0 64px; }
+  .hero-grid{ grid-template-columns:1fr 1fr; gap:48px; }
+  .lede{ font-size:23px; }
+  .tweak-grid{ grid-template-columns:1fr 1fr; }
+  .lab-panel{ padding:30px 28px 32px; }
+}
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{ animation:none !important; transition:none !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap-wide header-row">
+    <img class="logo" src="https://images.squarespace-cdn.com/content/v1/59ff50fd51a58420f29d997e/e560d012-6174-4d81-84f8-5d2d0f9973b8/MCS+Logo+copy.png?format=500w" alt="Magnuson Custom Stamps">
+    <a class="btn btn-red btn-header" href="#lab">Make a stamp</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- 2. Hero -->
+  <section class="hero">
+    <div class="wrap-wide hero-grid">
+      <div>
+        <h1>Make a stamp with us.</h1>
+        <p class="lede">Type what needs to be a stamp. A design appears. Make it yours. If <span data-goal>24</span> people back it, we make it in real rubber.</p>
+        <a class="btn btn-red" href="#lab">Make a stamp</a>
+      </div>
+      <figure class="hero-photo">
+        <img src="https://cdn11.bigcommerce.com/s-ra84opftpe/images/stencil/640w/products/7817/43998/784251902_28660648656865432_9038660240566402653_n__44360.1788294182.jpg?c=2" alt="A finished handmade card made with one of our rubber stamps">
+      </figure>
+    </div>
+  </section>
+
+  <!-- 3. The Lab -->
+  <section id="lab" class="lab">
+    <div class="wrap">
+      <div class="lab-panel">
+        <label class="lab-label" for="stamp-idea">What needs to be a stamp?</label>
+        <input id="stamp-idea" type="text" autocomplete="off">
+        <button id="draw-btn" class="btn btn-red btn-block" type="button">Draw it</button>
+
+        <div id="lab-result" hidden>
+          <div id="design-frame" class="design-frame" aria-live="polite">
+            <div id="drawing-dots" class="dots" hidden><span></span><span></span><span></span></div>
+            <img id="lab-design" alt="" hidden>
+          </div>
+          <div class="row-2">
+            <button id="save-btn" class="btn btn-outline" type="button">Save</button>
+            <button id="share-btn" class="btn btn-outline" type="button">Share</button>
+          </div>
+          <div class="tweak-grid">
+            <button class="btn btn-outline tweak" type="button">Make it cuter</button>
+            <button class="btn btn-outline tweak" type="button">Make it simpler</button>
+            <button class="btn btn-outline tweak" type="button">Try another</button>
+            <button class="btn btn-outline tweak" type="button">Change the words</button>
+          </div>
+          <p class="lab-note">Not quite right? Change it as many times as you want. It&rsquo;s free.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Backing board -->
+  <section class="board">
+    <div class="wrap">
+      <h2>Help pick what we make next.</h2>
+      <div class="rule"></div>
+      <p class="board-lede">Backers pay less. Nobody is charged unless it funds.</p>
+
+      <article class="board-card" data-backers="19">
+        <div class="card-art">
+          <img src="https://cdn11.bigcommerce.com/s-ra84opftpe/images/stencil/640w/products/7815/43958/Knit_Wits_Web_Image__61267.1788204629.png?c=2" alt="Stamp design of two knitting sheep">
+          <div class="funded-mark funded-only" aria-hidden="true">Funded</div>
+        </div>
+        <p class="maker">Made by Carol</p>
+        <p class="mount">Cling foam, unmounted</p>
+        <div class="open-only">
+          <p class="price-big">$<span data-backer-price>12</span> for backers</p>
+          <p class="price-sub">$<span data-made-price>15</span> once it&rsquo;s made</p>
+        </div>
+        <div class="funded-only">
+          <p class="price-big">$<span data-made-price>15</span></p>
+          <p class="price-sub">Backers paid $<span data-backer-price>12</span></p>
+        </div>
+        <div class="progress" role="progressbar" aria-label="Backers so far" aria-valuemin="0" aria-valuemax="24" aria-valuenow="19"><div class="progress-fill"></div></div>
+        <p class="backed-line"><span class="backed-count">19</span> of <span data-goal>24</span> people have backed this</p>
+        <p class="days-line open-only">3 days left</p>
+        <button class="btn btn-red btn-block back-btn open-only" type="button">Back this for $<span data-backer-price>12</span></button>
+        <button class="btn btn-red btn-block order-btn funded-only" type="button">Order one for $<span data-made-price>15</span></button>
+      </article>
+
+      <article class="board-card funded" data-backers="24">
+        <div class="card-art">
+          <img src="https://cdn11.bigcommerce.com/s-ra84opftpe/images/stencil/640w/products/7782/43174/Cowstume_Party_Web_Image__19813.1788277655.png?c=2" alt="Stamp design of a cow in a party costume">
+          <div class="funded-mark funded-only" aria-hidden="true">Funded</div>
+        </div>
+        <p class="maker">Made by Deb</p>
+        <p class="mount">Cling foam, unmounted</p>
+        <div class="open-only">
+          <p class="price-big">$<span data-backer-price>12</span> for backers</p>
+          <p class="price-sub">$<span data-made-price>15</span> once it&rsquo;s made</p>
+        </div>
+        <div class="funded-only">
+          <p class="price-big">$<span data-made-price>15</span></p>
+          <p class="price-sub">Backers paid $<span data-backer-price>12</span></p>
+        </div>
+        <div class="progress" role="progressbar" aria-label="Backers so far" aria-valuemin="0" aria-valuemax="24" aria-valuenow="24"><div class="progress-fill"></div></div>
+        <p class="backed-line"><span class="backed-count">24</span> of <span data-goal>24</span> people have backed this</p>
+        <button class="btn btn-red btn-block back-btn open-only" type="button">Back this for $<span data-backer-price>12</span></button>
+        <button class="btn btn-red btn-block order-btn funded-only" type="button">Order one for $<span data-made-price>15</span></button>
+      </article>
+
+      <article class="board-card" data-backers="7">
+        <div class="card-art">
+          <img src="https://cdn11.bigcommerce.com/s-ra84opftpe/images/stencil/640w/products/7788/43214/Twinkle_Toes_Web_Image__81670.1787815974.png?c=2" alt="Stamp design of dancing twinkle toes">
+          <div class="funded-mark funded-only" aria-hidden="true">Funded</div>
+        </div>
+        <p class="maker">Made by Sandy</p>
+        <p class="mount">Cling foam, unmounted</p>
+        <div class="open-only">
+          <p class="price-big">$<span data-backer-price>12</span> for backers</p>
+          <p class="price-sub">$<span data-made-price>15</span> once it&rsquo;s made</p>
+        </div>
+        <div class="funded-only">
+          <p class="price-big">$<span data-made-price>15</span></p>
+          <p class="price-sub">Backers paid $<span data-backer-price>12</span></p>
+        </div>
+        <div class="progress" role="progressbar" aria-label="Backers so far" aria-valuemin="0" aria-valuemax="24" aria-valuenow="7"><div class="progress-fill"></div></div>
+        <p class="backed-line"><span class="backed-count">7</span> of <span data-goal>24</span> people have backed this</p>
+        <p class="days-line open-only">6 days left</p>
+        <button class="btn btn-red btn-block back-btn open-only" type="button">Back this for $<span data-backer-price>12</span></button>
+        <button class="btn btn-red btn-block order-btn funded-only" type="button">Order one for $<span data-made-price>15</span></button>
+      </article>
+
+      <button class="btn btn-outline btn-block see-all" type="button">See all 14 designs</button>
+    </div>
+  </section>
+
+  <!-- 5. How it works -->
+  <section class="how">
+    <div class="wrap">
+      <h2>How it works</h2>
+      <div class="rule"></div>
+      <ol class="steps">
+        <li><span class="step-text">Type what needs to be a stamp</span></li>
+        <li><span class="step-text">A design appears, change anything until it&rsquo;s yours</span></li>
+        <li><span class="step-text">Share it wherever you want</span></li>
+        <li><span class="step-text">If <span data-goal>24</span> people back it we make it in rubber, backers get it for less</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 6. Proof it's real -->
+  <section class="proof">
+    <div class="wrap">
+      <figure>
+        <div class="proof-photo">
+          <img src="https://images.squarespace-cdn.com/content/v1/59ff50fd51a58420f29d997e/673b39e6-6ee0-4076-8316-e35cad4f25ae/PXL_20241023_182420088.MP.jpg?format=1500w" alt="Sheets of molded rubber stamps in the Magnuson shop">
+        </div>
+        <figcaption>Sheets of molded rubber, just out of the press.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 7. This week's challenge -->
+  <section class="challenge">
+    <div class="wrap">
+      <div class="challenge-box">
+        <h2>This week&rsquo;s challenge</h2>
+        <div class="rule"></div>
+        <p>The funniest birthday stamp you can make. Ends Sunday night. The group&rsquo;s favorite gets made.</p>
+        <a class="btn btn-red btn-block" href="#lab">Make yours</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- 8. Footer -->
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="foot-line">The drawing is done by a computer. The rubber is made by us, by hand, in New London, Minnesota.</p>
+    <img class="foot-logo" src="https://images.squarespace-cdn.com/content/v1/59ff50fd51a58420f29d997e/e560d012-6174-4d81-84f8-5d2d0f9973b8/MCS+Logo+copy.png?format=500w" alt="Magnuson Custom Stamps">
+    <ul class="foot-links">
+      <li><a href="https://www.facebook.com/groups/">Join the Facebook group</a></li>
+      <li><a href="mailto:nic@magnusoncustomstamps.com">Questions? Email Nic</a></li>
+      <li><a href="#">How we use your designs</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function () {
+  /* ---------------------------------------------------------
+     Placeholder numbers live here. Change them and every price,
+     goal, and progress bar on the page updates to match.
+     --------------------------------------------------------- */
+  var CONFIG = {
+    goal: 24,          // backers needed before we make a stamp
+    backerPrice: 12,   // what backers pay
+    madePrice: 15      // what it costs once it's made
+  };
+  /* --------------------------------------------------------- */
+
+  var DESIGNS = [
+    { src: "https://cdn11.bigcommerce.com/s-ra84opftpe/images/stencil/640w/products/7781/43173/Deadpan_Devotion_Web_Image__94185.1788276894.png?c=2", alt: "Your stamp design: Deadpan Devotion" },
+    { src: "https://cdn11.bigcommerce.com/s-ra84opftpe/images/stencil/640w/products/7782/43174/Cowstume_Party_Web_Image__19813.1788277655.png?c=2", alt: "Your stamp design: Cowstume Party" },
+    { src: "https://cdn11.bigcommerce.com/s-ra84opftpe/images/stencil/640w/products/7815/43958/Knit_Wits_Web_Image__61267.1788204629.png?c=2", alt: "Your stamp design: Knit Wits" },
+    { src: "https://cdn11.bigcommerce.com/s-ra84opftpe/images/stencil/640w/products/7783/43175/Merry_Moo_and_Birdie_Too_Web_Image__43057.1788277670.png?c=2", alt: "Your stamp design: Merry Moo and Birdie Too" },
+    { src: "https://cdn11.bigcommerce.com/s-ra84opftpe/images/stencil/640w/products/7802/43270/The_Usual_Suspecks_Web_Image__23655.1788277722.png?c=2", alt: "Your stamp design: The Usual Suspecks" },
+    { src: "https://cdn11.bigcommerce.com/s-ra84opftpe/images/stencil/640w/products/7804/43272/Festive_Little_Weirdo_Web_Image__44559.1788277742.png?c=2", alt: "Your stamp design: Festive Little Weirdo" },
+    { src: "https://cdn11.bigcommerce.com/s-ra84opftpe/images/stencil/640w/products/7788/43214/Twinkle_Toes_Web_Image__81670.1787815974.png?c=2", alt: "Your stamp design: Twinkle Toes" }
+  ];
+
+  var IDEAS = [
+    "a wiener dog in a birthday hat",
+    "thinking of you, in nice handwriting",
+    "a gnome watering his mushrooms",
+    "a loon on a quiet lake",
+    "world's best grandma, with hearts"
+  ];
+
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  // Fill every number that comes from CONFIG
+  $all("[data-goal]").forEach(function (el) { el.textContent = CONFIG.goal; });
+  $all("[data-backer-price]").forEach(function (el) { el.textContent = CONFIG.backerPrice; });
+  $all("[data-made-price]").forEach(function (el) { el.textContent = CONFIG.madePrice; });
+
+  // Cycling example placeholder
+  var input = $("#stamp-idea");
+  var ideaIdx = 0;
+  input.placeholder = IDEAS[0];
+  setInterval(function () {
+    if (document.activeElement === input || input.value) { return; }
+    ideaIdx = (ideaIdx + 1) % IDEAS.length;
+    input.placeholder = IDEAS[ideaIdx];
+  }, 2750);
+
+  // The Lab
+  var result = $("#lab-result");
+  var frame = $("#design-frame");
+  var designImg = $("#lab-design");
+  var dots = $("#drawing-dots");
+  var designIdx = -1;
+  var drawTimer = null;
+  var firstDraw = true;
+
+  function draw() {
+    result.hidden = false;
+    frame.setAttribute("aria-busy", "true");
+    designImg.hidden = true;
+    dots.hidden = false;
+    var labButtons = $all("#lab button");
+    labButtons.forEach(function (b) { b.disabled = true; });
+    if (firstDraw) {
+      firstDraw = false;
+      frame.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    if (drawTimer) { clearTimeout(drawTimer); }
+    drawTimer = setTimeout(function () {
+      designIdx = (designIdx + 1) % DESIGNS.length;
+      designImg.src = DESIGNS[designIdx].src;
+      designImg.alt = DESIGNS[designIdx].alt;
+      dots.hidden = true;
+      designImg.hidden = false;
+      frame.setAttribute("aria-busy", "false");
+      labButtons.forEach(function (b) { b.disabled = false; });
+    }, 1000);
+  }
+
+  $("#draw-btn").addEventListener("click", draw);
+  $all(".tweak").forEach(function (b) { b.addEventListener("click", draw); });
+
+  function flash(btn, msg) {
+    var original = btn.textContent;
+    btn.textContent = msg;
+    setTimeout(function () { btn.textContent = original; }, 1400);
+  }
+
+  $("#save-btn").addEventListener("click", function () {
+    flash(this, "Saved");
+  });
+
+  $("#share-btn").addEventListener("click", function () {
+    var btn = this;
+    if (navigator.share) {
+      navigator.share({ title: "Magnuson Stamp Lab", url: window.location.href }).catch(function () {});
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(window.location.href).then(
+        function () { flash(btn, "Link copied"); },
+        function () {}
+      );
+    }
+  });
+
+  // Backing board
+  $all(".board-card").forEach(function (card) {
+    var count = parseInt(card.getAttribute("data-backers"), 10) || 0;
+    var countEl = $(".backed-count", card);
+    var fill = $(".progress-fill", card);
+    var bar = $(".progress", card);
+
+    function render() {
+      if (count >= CONFIG.goal) {
+        count = CONFIG.goal;
+        card.classList.add("funded");
+      }
+      countEl.textContent = count;
+      var pct = Math.min(100, Math.round((count / CONFIG.goal) * 100));
+      fill.style.width = pct + "%";
+      bar.setAttribute("aria-valuemax", CONFIG.goal);
+      bar.setAttribute("aria-valuenow", count);
+    }
+    render();
+
+    var backBtn = $(".back-btn", card);
+    if (backBtn) {
+      backBtn.addEventListener("click", function () {
+        count += 1;
+        render();
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>
