@@ -1,0 +1,22 @@
+{
+  "routines": [
+    {
+      "id": "nightly-uploader",
+      "name": "Nightly uploader",
+      "project": "Product reels",
+      "kind": "scheduled",
+      "cwd": "/Users/nic/code/product-reels",
+      "prompt": "Check the reel queue and upload anything ready. Reply with a one-line summary.",
+      "timeoutMin": 20
+    },
+    {
+      "id": "scout-website",
+      "name": "Scout",
+      "project": "Website refresh",
+      "kind": "research",
+      "cwd": "/Users/nic/code/website",
+      "prompt": "You are the Scout for this project. It is considered perfected but nothing is ever done. Propose 3 small concrete improvements we have not thought of. Prefix each with FINDING: and keep it under 120 words.",
+      "timeoutMin": 15
+    }
+  ]
+}

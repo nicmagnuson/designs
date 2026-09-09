@@ -1,0 +1,9 @@
+{
+  "hooks": {
+    "SessionStart":     [{ "hooks": [{ "type": "command", "command": "node /ABSOLUTE/PATH/TO/tiny-planet-crew/bridge/hook.js" }] }],
+    "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "node /ABSOLUTE/PATH/TO/tiny-planet-crew/bridge/hook.js" }] }],
+    "Notification":     [{ "hooks": [{ "type": "command", "command": "node /ABSOLUTE/PATH/TO/tiny-planet-crew/bridge/hook.js" }] }],
+    "Stop":             [{ "hooks": [{ "type": "command", "command": "node /ABSOLUTE/PATH/TO/tiny-planet-crew/bridge/hook.js" }] }],
+    "SessionEnd":       [{ "hooks": [{ "type": "command", "command": "node /ABSOLUTE/PATH/TO/tiny-planet-crew/bridge/hook.js" }] }]
+  }
+}
