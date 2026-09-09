@@ -5,7 +5,8 @@ scheduled task, or research bot working on that project is a little robot living
 Finish tasks and the tile levels up: bigger dome, more decorations, antennas, solar panels.
 
 ## Run it
-Open `index.html` in any browser. No install. Progress saves in the browser.
+Open `index.html` in any browser. No install, works offline (Three.js is bundled inside the file). Progress saves in the browser.
+`planet-2d.html` is the lighter 2D canvas version with the same data; `planet-v1.html` is the original round planet.
 Use **Export / Import** to back up or move your world.
 
 ## What's on a tile
@@ -34,4 +35,3 @@ Real Claude Code sessions can show up as robots automatically.
 The sidebar footer shows **🟢 live bridge** when it is reading `state.json`.
 The hook writes to `state.json` next to `index.html` (override with `TPC_STATE`).
 
-`planet-v1.html` is the original round-planet version.
