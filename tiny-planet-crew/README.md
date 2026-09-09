@@ -28,6 +28,9 @@ Pick a world at the top of the sidebar: 🌍 Terra, 🔴 Mars, 🌊 Ocean (tiles
 - Nothing is ever perfect, so a perfected tile automatically gets a **Scout** research bot. Use **Copy research prompt** and paste it into a Claude Code chat to have it hunt for improvements. When it finds one, mark it 💡 **Found something**.
 - Robots that need you glow: ❓ has a question, 💡 found something, 🙋 waiting on you, 💤 nobody has talked to it in a while (the "stale" dropdown sets how long). The tile pulses gold and they appear under **Needs you**.
 
+## Run it on your computer
+See **SETUP.md** for the full walkthrough: launcher, hooks, click-to-open chats, scheduled tasks.
+
 ## Live bridge to Claude Code (optional, experimental)
 Real Claude Code sessions can show up as robots automatically.
 

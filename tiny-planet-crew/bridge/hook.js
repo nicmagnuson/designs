@@ -31,8 +31,10 @@ function update(ev) {
   try { state = JSON.parse(fs.readFileSync(STATE, 'utf8')); } catch (e) {}
   let p = state.projects.find(x => x.name.toLowerCase() === projectName.toLowerCase());
   if (!p) { p = { name: projectName, agents: [] }; state.projects.push(p); }
+  if (ev.cwd) p.cwd = ev.cwd;
   let a = p.agents.find(x => x.sessionId === sid);
   if (!a) { a = { sessionId: sid, name: 'Chat ' + sid.slice(0, 4), kind: 'chat', status: 'working', note: '', lastSeen: Date.now() }; p.agents.push(a); }
+  if (ev.cwd) a.cwd = ev.cwd;
   const now = Date.now();
   a.log = a.log || [];
   const say = (who, text) => { if (!text) return; a.log.push({ who, text: String(text).slice(0, 600), ts: now }); if (a.log.length > 40) a.log = a.log.slice(-40); };

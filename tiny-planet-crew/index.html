@@ -252,7 +252,7 @@ function showPop(p,a,sx,sy){
     ${(a.log&&a.log.length)?`<div class="chat">${a.log.slice(-10).map(m=>`<div class="msg ${m.who}">${esc(m.text)}<small>${m.who==='you'?'you':esc(a.name)} · ${ago(m.ts)}</small></div>`).join('')}</div>`:(a.note?`<div class="note">${esc(a.note)}</div>`:'')}
     <form class="say"><input type="text" placeholder="Tell it something… (logs to its chat)" maxlength="300" autocomplete="off"><button class="primary" type="submit">Send</button></form>
     <div class="pa">
-      ${a.sessionId?`<button class="accent" data-x="open">⧉ Copy resume cmd</button>`:''}
+      ${a.sessionId&&!String(a.sessionId).startsWith('routine:')?`<button class="accent" data-x="open">${LOCAL?'💬 Open chat':'⧉ Copy resume cmd'}</button>`:''}${LOCAL&&!a.sessionId?`<button class="accent" data-x="newchat">💬 New chat here</button>`:''}
       <button class="ghost" data-x="talk">🗨 Talked to it</button>
       ${s==='question'||s==='finding'?`<button class="ghost" data-x="answer">✅ Answered</button>`:''}
       <button class="ghost" data-x="ask">❓ Has a question</button>
@@ -269,7 +269,8 @@ function showPop(p,a,sx,sy){
   pop.querySelector('form.say').onsubmit=e=>{ e.preventDefault(); const inp=e.target.querySelector('input'); const v=inp.value.trim(); if(!v) return; logMsg(a,'you',v); a.lastSeen=Date.now(); if(a.status==='question'||a.status==='finding'||a.status==='idle'||a.status==='stale'){ a.status='working'; a.note=''; } beep(SFX.tick); commit(); showPop(p,a,sx,sy); };
   pop.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{
     const x=b.dataset.x;
-    if(x==='open'){ copy(`claude --resume ${a.sessionId}`); toast('Copied. Paste in a terminal to reopen that chat.'); a.lastSeen=Date.now(); }
+    if(x==='open'){ if(LOCAL){ fetch(`/open?session=${encodeURIComponent(a.sessionId)}&cwd=${encodeURIComponent(a.cwd||p.cwd||'')}`,{method:'POST'}).then(()=>toast('Opening that chat in Terminal…')).catch(()=>toast('Could not reach the local server')); } else { copy(`claude --resume ${a.sessionId}`); toast('Copied. Paste in a terminal to reopen that chat.'); } a.lastSeen=Date.now(); }
+    if(x==='newchat'){ fetch(`/open?cwd=${encodeURIComponent(a.cwd||p.cwd||'')}`,{method:'POST'}).then(()=>toast('Opening a new Claude chat in Terminal…')); }
     if(x==='talk'){ a.lastSeen=Date.now(); if(a.status==='stale'||a.status==='idle') a.status='working'; }
     if(x==='answer'){ a.status='working'; a.note=''; a.lastSeen=Date.now(); }
     if(x==='ask'){ const n=prompt('What is it asking?',a.status==='question'?a.note:''); if(n===null) return; a.status='question'; a.note=n; logMsg(a,'bot',n); beep(SFX.ask); }
@@ -536,20 +537,22 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; const t=
   renderer.render(scene,camera); updateLabels(); requestAnimationFrame(frame); }
 setInterval(()=>{ render(); },60000);
 // ---------- bridge (optional live sync from Claude Code hooks) ----------
-const bridgeEl=document.getElementById('bridge');
+const bridgeEl=document.getElementById('bridge'); const LOCAL=/^https?:/.test(location.protocol)&&/localhost|127\.0\.0\.1/.test(location.host);
 async function pollBridge(){
   if(!/^https?:/.test(location.protocol)) { bridgeEl.textContent='saved locally'; return; }
   try{ const r=await fetch('state.json?ts='+Date.now(),{cache:'no-store'}); if(!r.ok) throw 0; const live=await r.json(); mergeBridge(live); bridgeEl.textContent='🟢 live bridge'; }
   catch(e){ bridgeEl.textContent='saved locally'; }
+  try{ const r2=await fetch('/routines?ts='+Date.now(),{cache:'no-store'}); if(r2.ok){ const rj=await r2.json(); mergeRoutines(rj.routines||[]); } }catch(e){}
   setTimeout(pollBridge,4000);
 }
+function mergeRoutines(list){ let changed=false; const norm=v=>String(v).toLowerCase().replace(/[^a-z0-9]/g,''); list.forEach(r=>{ let p=state.projects.find(x=>norm(x.name)===norm(r.project)); if(!p){ p=mk(state,r.project); changed=true; } if(r.cwd&&!p.cwd){ p.cwd=r.cwd; } let a=p.agents.find(x=>x.sessionId==='routine:'+r.id); if(!a){ a=ag(r.name||r.id,r.kind||'scheduled','idle','Scheduled. Has not run yet.',Date.now()); a.sessionId='routine:'+r.id; a.live=true; p.agents.push(a); changed=true; } }); if(changed) commit(); }
 function mergeBridge(live){
   let changed=false;
   (live.projects||[]).forEach(lp=>{
-    const norm=v=>String(v).toLowerCase().replace(/[^a-z0-9]/g,''); let p=state.projects.find(x=>norm(x.name)===norm(lp.name)); if(!p){ p=mk(state,lp.name); changed=true; }
+    const norm=v=>String(v).toLowerCase().replace(/[^a-z0-9]/g,''); let p=state.projects.find(x=>norm(x.name)===norm(lp.name)); if(!p){ p=mk(state,lp.name); changed=true; } if(lp.cwd&&p.cwd!==lp.cwd){ p.cwd=lp.cwd; changed=true; }
     (lp.agents||[]).forEach(la=>{
-      let a=p.agents.find(x=>x.sessionId===la.sessionId); if(!a){ a=ag(la.name||'Claude chat',la.kind||'chat',la.status||'working',la.note||'',la.lastSeen||Date.now()); a.sessionId=la.sessionId; a.live=true; if(la.log) a.log=la.log; p.agents.push(a); changed=true; toast(`🤖 ${a.name} joined ${p.name}`); beep(SFX.bot); }
-      else { const ll=JSON.stringify(la.log||[]); if(a.status!==la.status||a.note!==la.note||a.lastSeen!==la.lastSeen||(la.log&&ll!==JSON.stringify(a.log||[]))){ a.status=la.status||a.status; a.note=la.note??a.note; a.lastSeen=la.lastSeen||a.lastSeen; if(la.log) a.log=la.log; a.live=true; changed=true; } }
+      let a=p.agents.find(x=>x.sessionId===la.sessionId); if(!a){ a=ag(la.name||'Claude chat',la.kind||'chat',la.status||'working',la.note||'',la.lastSeen||Date.now()); a.sessionId=la.sessionId; a.cwd=la.cwd; a.live=true; if(la.log) a.log=la.log; p.agents.push(a); changed=true; toast(`🤖 ${a.name} joined ${p.name}`); beep(SFX.bot); }
+      else { const ll=JSON.stringify(la.log||[]); if(a.status!==la.status||a.note!==la.note||a.lastSeen!==la.lastSeen||(la.log&&ll!==JSON.stringify(a.log||[]))){ a.status=la.status||a.status; a.note=la.note??a.note; a.lastSeen=la.lastSeen||a.lastSeen; if(la.log) a.log=la.log; if(la.cwd) a.cwd=la.cwd; a.live=true; changed=true; } }
     });
   });
   if(changed) commit();
