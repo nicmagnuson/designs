@@ -12,8 +12,12 @@ Use **Export / Import** to back up or move your world.
 ## What's on a tile
 Level 1 is a lone HQ dome. Each level adds to the settlement: workshop, crate stacks, storage tank, greenhouse, solar array, radar tower, wind turbine, a second workshop, and a flag at ★ Perfected, plus flowers, bushes and lamp posts. A landing pod (Home base) sits at the edge of the colony.
 
+## Planets
+Pick a world at the top of the sidebar: 🌍 Terra, 🔴 Mars, 🌊 Ocean (tiles float on pontoons and bob on the waves), 🌙 Moon (stars and Earth in the sky), ❄️ Ice. The colony and all progress carry over; only the scenery changes.
+
 ## Controls
 - **Drag** to pan, **scroll / pinch** to zoom, **⌂** to fit everything.
+- **Right-drag**, **two-finger twist**, **Q / E**, or the **↺ ↻** buttons rotate the camera.
 - **Click a robot** for its card: a mini chat transcript, its question, last contact. Type in the box to log what you told it. Buttons to mark it answered, talked to, finished, or to change its status.
 - **Click a tile** to open it in the sidebar. **Double-click** to zoom in on it.
 
