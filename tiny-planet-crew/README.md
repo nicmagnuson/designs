@@ -1,18 +1,34 @@
 # 🪐 Tiny Planet Crew
 
-A tiny visual task manager. Every project is a little robot living on a planet.
-Finish tasks and watch them level up, build bigger houses, and earn hats.
+A tiny visual task manager. Every project is a hex tile on a planet. Every chat,
+scheduled task, or research bot working on that project is a little robot living on the tile.
+Finish tasks and the tile levels up: bigger dome, more decorations, antennas, solar panels.
 
 ## Run it
-Open `index.html` in any browser. No install, no server. Progress saves in the browser (localStorage).
-Use **Export / Import** to back up or move your crew between computers.
+Open `index.html` in any browser. No install. Progress saves in the browser.
+Use **Export / Import** to back up or move your world.
+
+## Controls
+- **Drag** to pan, **scroll / pinch** to zoom, **⌂** to fit everything.
+- **Click a robot** for its card: what it's doing, its question, last contact. Buttons to mark it answered, talked to, finished, or to change its status.
+- **Click a tile** to open it in the sidebar. **Double-click** to zoom in on it.
 
 ## How it works
-- **Add a project** → a robot moves in with a little flag.
-- **Add tasks, check them off** → the robot's chest light fills up.
-- **Levels** (by tasks done): Lv1 flag → Lv2 tent + cap → Lv3 hut + hard hat → Lv4 house + bow → Lv5 tower + crown 👑
-- **Mark stuck** → the robot frowns, its antenna goes red, and it asks for help. Click it on the planet to jump to its card.
-- **All tasks done** → party hat and confetti.
-- **No tasks** → it naps (zzz).
-- Drag the planet to spin it. Click a robot to select it. Switch between Terra, Moon and Mars.
-- The sky follows your local time of day.
+- **+ Tile** adds a project. A new hex appears on the map.
+- Inside a tile, **Robot joins** adds a robot: 💬 chat, ⏰ scheduled task, or 🔭 research bot. Start a new chat for a project? Add a robot to that tile so it shows up helping.
+- **Tasks** drive levels. Level 1 → 10. At level 10 the tile is **★ Perfected**.
+- Nothing is ever perfect, so a perfected tile automatically gets a **Scout** research bot. Use **Copy research prompt** and paste it into a Claude Code chat to have it hunt for improvements. When it finds one, mark it 💡 **Found something**.
+- Robots that need you glow: ❓ has a question, 💡 found something, 🙋 waiting on you, 💤 nobody has talked to it in a while (the "stale" dropdown sets how long). The tile pulses gold and they appear under **Needs you**.
+
+## Live bridge to Claude Code (optional, experimental)
+Real Claude Code sessions can show up as robots automatically.
+
+1. Run the little server from this folder: `node bridge/serve.js` and open http://localhost:4747
+2. Add the hooks from `bridge/claude-settings.example.json` to your `~/.claude/settings.json`, replacing the path.
+3. Now each Claude Code session becomes a robot on the tile named after the folder it runs in (`basename` of the cwd).
+   Your first prompt names the robot. A permission prompt or idle notification turns it into ❓. When its turn ends it becomes 🙋 waiting on you. Its card has **Copy resume cmd**, which gives you `claude --resume <session>` to jump back into that chat.
+
+The sidebar footer shows **🟢 live bridge** when it is reading `state.json`.
+The hook writes to `state.json` next to `index.html` (override with `TPC_STATE`).
+
+`planet-v1.html` is the original round-planet version.
